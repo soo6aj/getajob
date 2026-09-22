@@ -70,21 +70,21 @@ export function RecruiterCreateJob() {
         {error && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>}
 
         <div className="bg-white rounded-xl border border-light-slate/50 p-6 space-y-4">
-          <h2 className="font-semibold text-midnight text-lg">Job Details & Textareas</h2>
+          <h2 className="font-semibold text-midnight text-lg">Job Details</h2>
           <div>
             <label className="block text-sm font-medium text-midnight mb-1.5">Job Title *</label>
             <input type="text" value={form.title} onChange={e => update('title', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder="e.g., Senior Frontend Engineer" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-midnight mb-1.5">Job Description * (&lt;textarea&gt;)</label>
+            <label className="block text-sm font-medium text-midnight mb-1.5">Job Description *</label>
             <textarea value={form.description} onChange={e => update('description', e.target.value)} rows={4} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" placeholder="Describe the role..." />
           </div>
           <div>
-            <label className="block text-sm font-medium text-midnight mb-1.5">Responsibilities (one per line, &lt;textarea&gt;)</label>
+            <label className="block text-sm font-medium text-midnight mb-1.5">Responsibilities (one per line)</label>
             <textarea value={form.responsibilities} onChange={e => update('responsibilities', e.target.value)} rows={3} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" placeholder="Build scalable UI components..." />
           </div>
           <div>
-            <label className="block text-sm font-medium text-midnight mb-1.5">Requirements (one per line, &lt;textarea&gt;)</label>
+            <label className="block text-sm font-medium text-midnight mb-1.5">Requirements (one per line)</label>
             <textarea value={form.requirements} onChange={e => update('requirements', e.target.value)} rows={3} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none" placeholder="3+ years of React experience..." />
           </div>
           <div>
@@ -94,18 +94,18 @@ export function RecruiterCreateJob() {
         </div>
 
         <div className="bg-white rounded-xl border border-light-slate/50 p-6 space-y-5">
-          <h2 className="font-semibold text-midnight text-lg">Dropdowns & Radio Controls</h2>
+          <h2 className="font-semibold text-midnight text-lg">Job Classification & Work Type</h2>
 
-          {/* Dropdown (<select>) Controls */}
+          {/* Dropdown Controls */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-midnight mb-1.5">Category (&lt;select&gt;)</label>
+              <label className="block text-sm font-medium text-midnight mb-1.5">Category</label>
               <select value={form.category} onChange={e => update('category', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
                 {['Engineering', 'Design', 'Marketing', 'Sales', 'Finance', 'Operations', 'Data Science', 'Product Management'].map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-midnight mb-1.5">Job Type (&lt;select&gt;)</label>
+              <label className="block text-sm font-medium text-midnight mb-1.5">Job Type</label>
               <select value={form.type} onChange={e => update('type', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
                 <option value="full-time">Full-Time</option>
                 <option value="part-time">Part-Time</option>
@@ -115,7 +115,7 @@ export function RecruiterCreateJob() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-midnight mb-1.5">Required Experience (&lt;select&gt;)</label>
+              <label className="block text-sm font-medium text-midnight mb-1.5">Required Experience</label>
               <select value={form.experienceLevel} onChange={e => update('experienceLevel', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
                 <option value="entry">Entry Level (0-2 yrs)</option>
                 <option value="mid">Mid Level (2-5 yrs)</option>
@@ -124,7 +124,7 @@ export function RecruiterCreateJob() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-midnight mb-1.5">Education Qualification (&lt;select&gt;)</label>
+              <label className="block text-sm font-medium text-midnight mb-1.5">Education Qualification</label>
               <select value={form.educationQualification} onChange={e => update('educationQualification', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
                 <option value="Bachelor's Degree">Bachelor's Degree</option>
                 <option value="Master's Degree">Master's Degree</option>
@@ -137,7 +137,7 @@ export function RecruiterCreateJob() {
 
           {/* Radio Buttons (Workplace Type) */}
           <div>
-            <label className="block text-sm font-medium text-midnight mb-2">Workplace Type (Radio Buttons)</label>
+            <label className="block text-sm font-medium text-midnight mb-2">Workplace Type</label>
             <div className="flex flex-wrap items-center gap-6 p-4 bg-gray-50 rounded-xl border border-light-slate/50">
               {[
                 { value: 'remote', label: 'Remote', desc: 'Work from anywhere' },
@@ -164,7 +164,7 @@ export function RecruiterCreateJob() {
 
           {/* Checkboxes (Perks & Benefits) */}
           <div>
-            <label className="block text-sm font-medium text-midnight mb-2">Perks & Benefits (Checkboxes)</label>
+            <label className="block text-sm font-medium text-midnight mb-2">Perks & Benefits</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
                 { key: 'healthInsurance', label: 'Health Insurance' },
@@ -197,14 +197,14 @@ export function RecruiterCreateJob() {
           </div>
         </div>
 
-        {/* Salary Range Slider & Date Picker Section */}
+        {/* Salary Range & Deadline Section */}
         <div className="bg-white rounded-xl border border-light-slate/50 p-6 space-y-4">
-          <h2 className="font-semibold text-midnight text-lg">Range Sliders & Date Picker</h2>
+          <h2 className="font-semibold text-midnight text-lg">Compensation & Timeline</h2>
 
           {/* Range Slider for Salary */}
           <div className="space-y-4 p-4 bg-gray-50 rounded-xl border border-light-slate/50">
             <div className="flex justify-between items-center">
-              <label className="block text-sm font-semibold text-midnight">Salary Range Slider</label>
+              <label className="block text-sm font-semibold text-midnight">Salary Range</label>
               <span className="text-xs font-bold text-primary bg-primary-50 px-2.5 py-1 rounded-md">
                 ₹{(form.salaryMin / 100000).toFixed(1)}L - ₹{(form.salaryMax / 100000).toFixed(1)}L / year
               </span>
@@ -241,9 +241,9 @@ export function RecruiterCreateJob() {
             </div>
           </div>
 
-          {/* Date Picker (type="date") */}
+          {/* Application Deadline */}
           <div>
-            <label className="block text-sm font-medium text-midnight mb-1.5">Application Deadline * (&lt;input type="date"&gt;)</label>
+            <label className="block text-sm font-medium text-midnight mb-1.5">Application Deadline *</label>
             <input type="date" value={form.applicationDeadline} onChange={e => update('applicationDeadline', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
           </div>
         </div>
