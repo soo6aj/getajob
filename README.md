@@ -2,6 +2,9 @@
 
 > Modern, responsive, high-performance recruitment portal connecting ambitious students and job seekers with leading companies and hiring managers.
 
+> 📖 **Need a complete architecture explanation & presentation script?**  
+> Check out the [Comprehensive Presentation & Architecture Guide](PRESENTATION_GUIDE.md).
+
 ![getAjob Portal](frontend/src/assets/hero-illustration.jpg)
 
 ---
