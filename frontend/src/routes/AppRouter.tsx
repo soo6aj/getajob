@@ -8,6 +8,7 @@ import { AdminLayout } from '../layouts/AdminLayout';
 
 // Route Guard
 import { ProtectedRoute } from './ProtectedRoute';
+import { MaintenanceGuard } from './MaintenanceGuard';
 
 // Public & Auth Pages
 import { WelcomePage } from '../pages/public/WelcomePage';
@@ -52,7 +53,11 @@ export const router = createBrowserRouter([
   // Public & Landing
   {
     path: '/',
-    element: <PublicLayout />,
+    element: (
+      <MaintenanceGuard>
+        <PublicLayout />
+      </MaintenanceGuard>
+    ),
     children: [
       { index: true, element: <WelcomePage /> },
     ],
@@ -63,15 +68,27 @@ export const router = createBrowserRouter([
   },
   {
     path: '/register',
-    element: <RegisterPage />,
+    element: (
+      <MaintenanceGuard>
+        <RegisterPage />
+      </MaintenanceGuard>
+    ),
   },
   {
     path: '/register/student',
-    element: <StudentRegisterPage />,
+    element: (
+      <MaintenanceGuard>
+        <StudentRegisterPage />
+      </MaintenanceGuard>
+    ),
   },
   {
     path: '/register/recruiter',
-    element: <RecruiterRegisterPage />,
+    element: (
+      <MaintenanceGuard>
+        <RecruiterRegisterPage />
+      </MaintenanceGuard>
+    ),
   },
   {
     path: '/forgot-password',
@@ -87,7 +104,9 @@ export const router = createBrowserRouter([
     path: '/student',
     element: (
       <ProtectedRoute allowedRoles={['student']}>
-        <StudentLayout />
+        <MaintenanceGuard>
+          <StudentLayout />
+        </MaintenanceGuard>
       </ProtectedRoute>
     ),
     children: [
@@ -109,7 +128,9 @@ export const router = createBrowserRouter([
     path: '/recruiter',
     element: (
       <ProtectedRoute allowedRoles={['recruiter']}>
-        <RecruiterLayout />
+        <MaintenanceGuard>
+          <RecruiterLayout />
+        </MaintenanceGuard>
       </ProtectedRoute>
     ),
     children: [

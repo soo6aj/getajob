@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import { Shield, Lock, Database, Save, AlertTriangle, Key } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
+import { settingsService } from '../../services/settingsService';
 
 export function AdminSettings() {
   const { addToast } = useToast();
 
-  const [platformConfig, setPlatformConfig] = useState({
-    siteName: 'getAjob',
-    supportEmail: 'support@getajob.careers',
-    allowStudentRegistration: true,
-    allowRecruiterRegistration: true,
-    requireCompanyVerification: true,
-    maintenanceMode: false,
-  });
+  const [platformConfig, setPlatformConfig] = useState(() => settingsService.getSettings());
 
   const [passwords, setPasswords] = useState({
     current: '',
@@ -22,6 +16,7 @@ export function AdminSettings() {
 
   const handleSavePlatform = (e: React.FormEvent) => {
     e.preventDefault();
+    settingsService.saveSettings(platformConfig);
     addToast('success', 'Configuration Saved', 'Platform system preferences updated.');
   };
 
