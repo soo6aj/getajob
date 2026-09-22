@@ -40,8 +40,7 @@
   --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* ─── Google Fonts Import ─────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 
 /* ─── Base Styles ─────────────────────────────────── */
 * {
