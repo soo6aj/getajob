@@ -6,7 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
 export function StudentRegisterPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', college: '', degree: '', graduationYear: new Date().getFullYear() + 1 });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', college: '', degree: '', graduationYear: new Date().getFullYear() + 1 });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -14,16 +15,44 @@ export function StudentRegisterPage() {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
-  const update = (key: string, value: string | number) => setForm(prev => ({ ...prev, [key]: value }));
+  const validate = (currentForm = form) => {
+    const errors: Record<string, string> = {};
+    if (!currentForm.name.trim()) errors.name = 'Full name is required';
+    if (!currentForm.email.trim()) errors.email = 'Email address is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentForm.email)) errors.email = 'Please enter a valid email address';
+
+    if (!currentForm.phone.trim()) errors.phone = 'Phone number is required';
+    else if (currentForm.phone.replace(/[^0-9]/g, '').length < 10) errors.phone = 'Please enter a valid phone number (at least 10 digits)';
+
+    if (!currentForm.college.trim()) errors.college = 'College is required';
+    if (!currentForm.degree.trim()) errors.degree = 'Degree is required';
+
+    if (!currentForm.password) errors.password = 'Password is required';
+    else if (currentForm.password.length < 6) errors.password = 'Password must be at least 6 characters';
+
+    if (!currentForm.confirmPassword) errors.confirmPassword = 'Please confirm your password';
+    else if (currentForm.password !== currentForm.confirmPassword) errors.confirmPassword = 'Passwords do not match';
+
+    return errors;
+  };
+
+  const update = (key: string, value: string | number) => {
+    const updated = { ...form, [key]: value };
+    setForm(updated);
+    if (fieldErrors[key]) {
+      setFieldErrors(prev => ({ ...prev, [key]: '' }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.name || !form.email || !form.password || !form.college || !form.degree) {
-      setError('Please fill in all required fields.'); return;
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
     }
-    if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return; }
-    if (form.password !== form.confirmPassword) { setError('Passwords do not match.'); return; }
+
     setIsLoading(true);
     const result = await registerStudent(form);
     setIsLoading(false);
@@ -32,6 +61,12 @@ export function StudentRegisterPage() {
       navigate('/student/home');
     } else setError(result.error || 'Registration failed.');
   };
+
+  const getInputClass = (fieldName: string) =>
+    `w-full px-4 py-3 rounded-lg border outline-none transition-all ${fieldErrors[fieldName]
+      ? 'border-red-400 focus:ring-2 focus:ring-red-200 focus:border-red-500'
+      : 'border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary'
+    }`;
 
   return (
     <div className="min-h-screen bg-off-white flex items-center justify-center p-4">
@@ -44,41 +79,60 @@ export function StudentRegisterPage() {
         <div className="bg-white rounded-2xl shadow-card p-8 border border-light-slate/50">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>}
+
             <div>
               <label className="block text-sm font-medium text-midnight mb-1.5">Full Name *</label>
-              <input type="text" value={form.name} onChange={e => update('name', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="John Doe" />
+              <input type="text" value={form.name} onChange={e => update('name', e.target.value)} className={getInputClass('name')} placeholder="John Doe" />
+              {fieldErrors.name && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.name}</p>}
             </div>
+
             <div>
               <label className="block text-sm font-medium text-midnight mb-1.5">Email Address *</label>
-              <input type="email" value={form.email} onChange={e => update('email', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="you@example.com" />
+              <input type="email" value={form.email} onChange={e => update('email', e.target.value)} className={getInputClass('email')} placeholder="you@example.com" />
+              {fieldErrors.email && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.email}</p>}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-midnight mb-1.5">Phone Number *</label>
+              <input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} className={getInputClass('phone')} placeholder="+91 9876543210" />
+              {fieldErrors.phone && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.phone}</p>}
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-midnight mb-1.5">College *</label>
-                <input type="text" value={form.college} onChange={e => update('college', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="IIT Delhi" />
+                <input type="text" value={form.college} onChange={e => update('college', e.target.value)} className={getInputClass('college')} placeholder="IIT Delhi" />
+                {fieldErrors.college && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.college}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-midnight mb-1.5">Degree *</label>
-                <input type="text" value={form.degree} onChange={e => update('degree', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="B.Tech CS" />
+                <input type="text" value={form.degree} onChange={e => update('degree', e.target.value)} className={getInputClass('degree')} placeholder="B.Tech CS" />
+                {fieldErrors.degree && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.degree}</p>}
               </div>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-midnight mb-1.5">Graduation Year</label>
               <input type="number" value={form.graduationYear} onChange={e => update('graduationYear', parseInt(e.target.value))} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" min={2020} max={2035} />
             </div>
+
             <div>
               <label className="block text-sm font-medium text-midnight mb-1.5">Password *</label>
               <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => update('password', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary pr-12 outline-none transition-all" placeholder="Min 6 characters" />
+                <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => update('password', e.target.value)} className={`${getInputClass('password')} pr-12`} placeholder="Min 6 characters" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-text hover:text-midnight">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+              {fieldErrors.password && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.password}</p>}
             </div>
+
             <div>
               <label className="block text-sm font-medium text-midnight mb-1.5">Confirm Password *</label>
-              <input type="password" value={form.confirmPassword} onChange={e => update('confirmPassword', e.target.value)} className="w-full px-4 py-3 rounded-lg border border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Repeat your password" />
+              <input type="password" value={form.confirmPassword} onChange={e => update('confirmPassword', e.target.value)} className={getInputClass('confirmPassword')} placeholder="Repeat your password" />
+              {fieldErrors.confirmPassword && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.confirmPassword}</p>}
             </div>
+
             <button type="submit" disabled={isLoading} className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover disabled:opacity-50 transition-colors mt-2">
               {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <UserPlus className="w-5 h-5" />}
               {isLoading ? 'Creating account...' : 'Create Account'}
