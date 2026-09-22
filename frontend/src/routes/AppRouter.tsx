@@ -46,7 +46,6 @@ import { AdminHome } from '../pages/admin/AdminHome';
 import { AdminUsers } from '../pages/admin/AdminUsers';
 import { AdminJobs } from '../pages/admin/AdminJobs';
 import { AdminCompanies } from '../pages/admin/AdminCompanies';
-import { AdminReports } from '../pages/admin/AdminReports';
 import { AdminSettings } from '../pages/admin/AdminSettings';
 
 export const router = createBrowserRouter([
@@ -142,7 +141,6 @@ export const router = createBrowserRouter([
       { path: 'users', element: <AdminUsers /> },
       { path: 'jobs', element: <AdminJobs /> },
       { path: 'companies', element: <AdminCompanies /> },
-      { path: 'reports', element: <AdminReports /> },
       { path: 'settings', element: <AdminSettings /> },
     ],
   },

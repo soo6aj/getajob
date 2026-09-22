@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, Briefcase, Building2, Flag, Settings, LogOut, Menu, X, ChevronDown, Shield, Bell
+  LayoutDashboard, Users, Briefcase, Building2, Settings, LogOut, Menu, X, ChevronDown, Shield, Bell
 } from 'lucide-react';
 import { Logo } from '../components/common/Logo';
 import { useAuth } from '../context/AuthContext';
@@ -13,7 +13,6 @@ const adminNav = [
   { label: 'Users', href: '/admin/users', icon: Users },
   { label: 'Jobs', href: '/admin/jobs', icon: Briefcase },
   { label: 'Companies', href: '/admin/companies', icon: Building2 },
-  { label: 'Reports', href: '/admin/reports', icon: Flag },
   { label: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
@@ -44,9 +43,8 @@ export function AdminLayout() {
             const isActive = location.pathname === item.href;
             return (
               <Link key={item.href} to={item.href}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
-                }`}>
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                  }`}>
                 <item.icon className="w-5 h-5" />{item.label}
               </Link>
             );
@@ -73,9 +71,8 @@ export function AdminLayout() {
             const isActive = location.pathname === item.href;
             return (
               <Link key={item.href} to={item.href} onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5'
-                }`}>
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5'
+                  }`}>
                 <item.icon className="w-5 h-5" />{item.label}
               </Link>
             );
