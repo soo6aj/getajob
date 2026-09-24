@@ -239,6 +239,7 @@ export interface LoginCredentials {
 export interface StudentRegistration {
   name: string;
   email: string;
+  phone: string;
   password: string;
   confirmPassword: string;
   college: string;
@@ -249,6 +250,7 @@ export interface StudentRegistration {
 export interface RecruiterRegistration {
   name: string;
   email: string;
+  phone: string;
   password: string;
   confirmPassword: string;
   companyName: string;

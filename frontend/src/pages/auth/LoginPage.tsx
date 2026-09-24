@@ -5,22 +5,81 @@ import { Logo } from '../../components/common/Logo';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
+  const validateField = (field: string, value: string): string => {
+    switch (field) {
+      case 'email':
+        if (!value.trim()) return 'Email address is required';
+        if (!EMAIL_REGEX.test(value.trim())) return 'Please enter a valid email address';
+        return '';
+      case 'password':
+        if (!value) return 'Password is required';
+        if (value.length < 6) return 'Password must be at least 6 characters';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const validateAll = (): Record<string, string> => {
+    const errors: Record<string, string> = {};
+    const emailError = validateField('email', email);
+    const passwordError = validateField('password', password);
+    if (emailError) errors.email = emailError;
+    if (passwordError) errors.password = passwordError;
+    return errors;
+  };
+
+  const handleBlur = (field: string, value: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const error = validateField(field, value);
+    setFieldErrors(prev => ({ ...prev, [field]: error }));
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    if (touched.email) {
+      const error = validateField('email', value);
+      setFieldErrors(prev => ({ ...prev, email: error }));
+    }
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    if (touched.password) {
+      const error = validateField('password', value);
+      setFieldErrors(prev => ({ ...prev, password: error }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!email || !password) { setError('Please fill in all fields.'); return; }
+
+    const validationErrors = validateAll();
+    setTouched({ email: true, password: true });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
+    }
+
+    setFieldErrors({});
     setIsLoading(true);
-    const result = await login({ email, password });
+    const result = await login({ email: email.trim(), password });
     setIsLoading(false);
     if (result.success) {
       addToast('success', 'Welcome back!', 'You have been logged in successfully.');
@@ -46,6 +105,12 @@ export function LoginPage() {
     }
   };
 
+  const getInputClass = (fieldName: string) =>
+    `w-full px-4 py-3 rounded-lg border outline-none transition-all ${fieldErrors[fieldName] && touched[fieldName]
+      ? 'border-red-400 focus:ring-2 focus:ring-red-200 focus:border-red-500'
+      : 'border-light-slate focus:ring-2 focus:ring-primary/20 focus:border-primary'
+    }`;
+
   return (
     <div className="min-h-screen bg-off-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -56,17 +121,22 @@ export function LoginPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-card p-8 border border-light-slate/50">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
             )}
             <div>
               <label className="block text-sm font-medium text-midnight mb-1.5">Email Address</label>
               <input
-                type="email" value={email} onChange={e => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-light-slate bg-white text-midnight placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                placeholder="you@example.com"
+                type="email"
+                value={email}
+                onChange={e => handleEmailChange(e.target.value)}
+                onBlur={() => handleBlur('email', email)}
+                className={getInputClass('email')}
+                placeholder="Enter your email address"
+                autoComplete="email"
               />
+              {fieldErrors.email && touched.email && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.email}</p>}
             </div>
             <div>
               <div className="flex items-center justify-between mb-1.5">
@@ -75,14 +145,19 @@ export function LoginPage() {
               </div>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-light-slate bg-white text-midnight placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary pr-12 transition-all"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => handlePasswordChange(e.target.value)}
+                  onBlur={() => handleBlur('password', password)}
+                  className={`${getInputClass('password')} pr-12`}
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-text hover:text-midnight">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+              {fieldErrors.password && touched.password && <p className="mt-1 text-xs text-red-500 font-medium">{fieldErrors.password}</p>}
             </div>
             <button
               type="submit" disabled={isLoading}
